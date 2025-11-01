@@ -74,7 +74,14 @@ button {
     font-size: 14px;
     font-weight: 500;
     transition: all 0.2s;
+    display: flex;
 }
+
+button img {
+            width: 16px;
+            height: 14px;
+            object-fit: contain;
+        }
 
 button:hover {
     background: #f5f5f5;
@@ -82,7 +89,7 @@ button:hover {
 
 .btn-download {
     background: #4CAF50;
-    color: white;
+    color: rgb(0, 0, 0);
     border: none;
 }
 
@@ -93,6 +100,80 @@ button:hover {
 .btn-download:disabled {
     background: #cccccc;
     cursor: not-allowed;
+}
+
+.main-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 200px;
+    background: #2d2d2d;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #1a1a1a;
+}
+
+.sidebar-header {
+    padding: 16px;
+    font-size: 12px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+    font-size: 14px;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-item:hover {
+    background: #3d3d3d;
+}
+
+.sidebar-item.active {
+    background: #3d3d3d;
+    border-left-color: #4CAF50;
+}
+
+.sidebar-item .icon {
+    font-size: 16px;
+}
+
+.new-doc-btn {
+    margin: 16px;
+    padding: 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.new-doc-btn:hover {
+    background: #45a049;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid #3d3d3d;
+    font-size: 12px;
+    color: #999;
 }
 
 .main-container {
@@ -309,4 +390,19 @@ textarea {
 
 .error.show {
     display: block;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+    text-align: center;
+}
+
+.empty-state .icon {
+    font-size: 48px;
+    margin-bottom: 16px;
 }

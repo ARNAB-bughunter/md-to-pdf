@@ -18,25 +18,50 @@
         </div>
         <div class="header-actions">
             <button id="downloadBtn" class="btn-download">
-                📥 Download
+                <img src="/static/icons8-pdf-50.png" alt="PDF"> 
+                Download
             </button>
+            <button id="loginBtn">Login</button>
         </div>
     </div>
 
     <div class="error" id="errorMsg"></div>
 
-    <div class="main-container">
-        <div class="editor-pane">
-            <div class="pane-header">
-                <div class="doc-name-label">DOCUMENT NAME</div>
-                <input type="text" id="docNameInput" value="Untitled Document" />
+    <div class="main-wrapper">
+        <div class="sidebar">
+            <button class="new-doc-btn" id="newDocBtn">
+                <span>➕</span>
+                <span>New document</span>
+            </button>
+            
+            <div class="sidebar-header">Documents</div>
+            
+            <div id="documentList">
+                <div class="sidebar-item active" data-doc-id="default">
+                    <span class="icon">📄</span>
+                    <span>New document</span>
+                </div>
             </div>
-            <textarea id="editor" placeholder="Start typing your markdown here..."></textarea>
+
+            <div class="sidebar-footer">
+                Login to access your documents.
+            </div>
         </div>
 
-        <div class="preview-pane">
-            <div class="pane-header">Live Preview</div>
-            <div class="preview-content" id="preview"></div>
+        <div class="main-container">
+            <div class="editor-pane">
+                <div class="pane-header">
+                    <div class="doc-name-label">DOCUMENT NAME</div>
+                    <input type="text" id="docNameInput" value="Untitled Document" />
+                </div>
+                <textarea id="editor" placeholder="Start typing your markdown here..."></textarea>
+            </div>
+
+            <div class="preview-pane">
+                <div class="pane-header">Live Preview</div>
+                <div class="pane-header"></div>
+                <div class="preview-content" id="preview"></div>
+            </div>
         </div>
     </div>
 
@@ -46,9 +71,9 @@
     </div>
 
     <script>
-        const API_URL = 'http://0.0.0.0:5000/api/convert';
+        const API_URL = 'http://localhost:5000/api/convert';
         const md = window.markdownit({
-            html: true  // Enable HTML tags in markdown
+            html: true
         });
         const editor = document.getElementById('editor');
         const preview = document.getElementById('preview');
@@ -57,14 +82,82 @@
         const errorMsg = document.getElementById('errorMsg');
         const docName = document.getElementById('docName');
         const docNameInput = document.getElementById('docNameInput');
+        const newDocBtn = document.getElementById('newDocBtn');
+        const documentList = document.getElementById('documentList');
+
+        let documents = [
+            { id: 'default', name: 'New document', content: editor.value }
+        ];
+        let currentDocId = 'default';
 
         // Live preview update
-        editor.addEventListener('input', updatePreview);
+        editor.addEventListener('input', function() {
+            updatePreview();
+            saveCurrentDocument();
+        });
+
+        docNameInput.addEventListener('input', function() {
+            const doc = documents.find(d => d.id === currentDocId);
+            if (doc) {
+                doc.name = docNameInput.value;
+                renderDocumentList();
+            }
+        });
 
         function updatePreview() {
             const markdown = editor.value;
             preview.innerHTML = md.render(markdown);
         }
+
+        function saveCurrentDocument() {
+            const doc = documents.find(d => d.id === currentDocId);
+            if (doc) {
+                doc.content = editor.value;
+            }
+        }
+
+        function loadDocument(docId) {
+            saveCurrentDocument();
+            
+            const doc = documents.find(d => d.id === docId);
+            if (doc) {
+                currentDocId = docId;
+                editor.value = doc.content;
+                docNameInput.value = doc.name;
+                updatePreview();
+                
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-doc-id="${docId}"]`).classList.add('active');
+            }
+        }
+
+        function renderDocumentList() {
+            documentList.innerHTML = documents.map(doc => `
+                <div class="sidebar-item ${doc.id === currentDocId ? 'active' : ''}" data-doc-id="${doc.id}">
+                    <span class="icon">📄</span>
+                    <span>${doc.name}</span>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    loadDocument(this.getAttribute('data-doc-id'));
+                });
+            });
+        }
+
+        newDocBtn.addEventListener('click', function() {
+            const newDoc = {
+                id: 'doc_' + Date.now(),
+                name: 'Untitled Document',
+                content: ''
+            };
+            documents.push(newDoc);
+            renderDocumentList();
+            loadDocument(newDoc.id);
+        });
 
         // Download PDF via API
         downloadBtn.addEventListener('click', async function() {
@@ -123,6 +216,7 @@
 
         // Initial preview
         updatePreview();
+        renderDocumentList();
     </script>
 </body>
 </html>
