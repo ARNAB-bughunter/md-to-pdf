@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css" />
+    
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span>M</span>
+            <div>
+                <input type="text" id="docName" class="doc-name-input" value="Markdown to PDF" />
+            </div>
+        </div>
+        <div class="header-actions">
+            <button id="downloadBtn" class="btn-download">
+                📥 Download
+            </button>
+        </div>
+    </div>
+
+    <div class="error" id="errorMsg"></div>
+
+    <div class="main-container">
+        <div class="editor-pane">
+            <div class="pane-header">
+                <div class="doc-name-label">DOCUMENT NAME</div>
+                <input type="text" id="docNameInput" value="Markdown to PDF" />
+            </div>
+            <textarea id="editor" placeholder="Start typing your markdown here..."></textarea>
+        </div>
+
+        <div class="preview-pane">
+            <div class="pane-header">Live Preview</div>
+            <div class="preview-content" id="preview"></div>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>Generating PDF...</div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api/convert';
+        const md = window.markdownit({
+            html: true  // Enable HTML tags in markdown
+        });
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const loading = document.getElementById('loading');
+        const errorMsg = document.getElementById('errorMsg');
+        const docName = document.getElementById('docName');
+        const docNameInput = document.getElementById('docNameInput');
+
+        // Live preview update
+        editor.addEventListener('input', updatePreview);
+
+        function updatePreview() {
+            const markdown = editor.value;
+            preview.innerHTML = md.render(markdown);
+        }
+
+        // Download PDF via API
+        downloadBtn.addEventListener('click', async function() {
+            const markdown = editor.value.trim();
+            
+            if (!markdown) {
+                showError('Please enter some markdown content first!');
+                return;
+            }
+
+            loading.classList.add('show');
+            errorMsg.classList.remove('show');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        markdown: markdown,
+                        filename: docNameInput.value.trim() + '.pdf'
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to generate PDF');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = docNameInput.value.trim() + '.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to generate PDF. Make sure the Flask server is running on port 5000.');
+            } finally {
+                loading.classList.remove('show');
+            }
+        });
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.classList.add('show');
+            setTimeout(() => {
+                errorMsg.classList.remove('show');
+            }, 5000);
+        }
+
+        // Initial preview
+        updatePreview();
+    </script>
+</body>
+</html>
