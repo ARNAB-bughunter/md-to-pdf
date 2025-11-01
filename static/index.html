@@ -13,7 +13,7 @@
         <div class="logo">
             <span>M</span>
             <div>
-                <input type="text" id="docName" class="doc-name-input" value="Markdown to PDF" />
+                Markdown to PDF
             </div>
         </div>
         <div class="header-actions">
@@ -29,7 +29,7 @@
         <div class="editor-pane">
             <div class="pane-header">
                 <div class="doc-name-label">DOCUMENT NAME</div>
-                <input type="text" id="docNameInput" value="Markdown to PDF" />
+                <input type="text" id="docNameInput" value="Untitled Document" />
             </div>
             <textarea id="editor" placeholder="Start typing your markdown here..."></textarea>
         </div>
@@ -46,7 +46,7 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api/convert';
+        const API_URL = 'http://0.0.0.0:5000/api/convert';
         const md = window.markdownit({
             html: true  // Enable HTML tags in markdown
         });
