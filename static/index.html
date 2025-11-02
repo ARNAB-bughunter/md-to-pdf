@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown to PDF</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
-    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/static/index_style.css" />
     
 </head>
 <body>
@@ -39,7 +39,7 @@
             <div id="documentList">
                 <div class="sidebar-item active" data-doc-id="default">
                     <span class="icon">📄</span>
-                    <span>New document</span>
+                    <span>Untitled Document</span>
                 </div>
             </div>
 
@@ -71,10 +71,12 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api/convert';
+        const API_URL_CONVERTER = 'http://0.0.0.0:5000/api/convert';
+        const API_URL_LOGIN = 'http://0.0.0.0:5000/api/login'
         const md = window.markdownit({
             html: true
         });
+        const loginBtn = document.getElementById('loginBtn')
         const editor = document.getElementById('editor');
         const preview = document.getElementById('preview');
         const downloadBtn = document.getElementById('downloadBtn');
@@ -86,7 +88,7 @@
         const documentList = document.getElementById('documentList');
 
         let documents = [
-            { id: 'default', name: 'New document', content: editor.value }
+            { id: 'default', name: 'Untitled Document', content: editor.value }
         ];
         let currentDocId = 'default';
 
@@ -172,7 +174,7 @@
             errorMsg.classList.remove('show');
 
             try {
-                const response = await fetch(API_URL, {
+                const response = await fetch(API_URL_CONVERTER, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -205,6 +207,12 @@
                 loading.classList.remove('show');
             }
         });
+
+
+        // Login Page
+        loginBtn.addEventListener('click', async function() {
+            window.location.href = '/login';
+        })
 
         function showError(message) {
             errorMsg.textContent = message;
