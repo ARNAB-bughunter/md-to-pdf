@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from weasyprint import HTML, CSS
-from io import BytesIO
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from rate_limiter import limiter, rate_limit_exceeded_handler
 
 from src.converter import converter
 
@@ -19,35 +20,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Attach limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 class MarkdownRequest(BaseModel):
     markdown: str
     filename: str = "document.pdf"
 
-
-
-
 @app.get("/")
 async def redirect_to_index():
     return FileResponse("static/index.html")
 
-@app.get("/login")
-async def login():
-    return FileResponse("static/login.html")
-
 @app.post("/api/convert")
-async def convert_md_to_pdf(request: MarkdownRequest):
+@limiter.limit("5/minute")
+async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
     try:
-        if not request.markdown.strip():
+        if not input_request.markdown.strip():
             raise HTTPException(status_code=400, detail="Empty content")
         
-        pdf_buffer = converter(request.markdown)
+        pdf_buffer = converter(input_request.markdown)
                 
         return StreamingResponse(
             pdf_buffer,
             media_type="application/pdf",
-            headers={"Content-Disposition": f"attachment; filename={request.filename}"}
+            headers={"Content-Disposition": f"attachment; filename={input_request.filename}"}
         )
         
     except Exception as e:

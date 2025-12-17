@@ -3,10 +3,10 @@ from weasyprint import HTML, CSS
 from io import BytesIO
 
 
-def converter(markdown):
+def converter(markdown_text):
     # Convert markdown to HTML
     html = markdown.markdown(
-        markdown, 
+        markdown_text, 
         extensions=['extra', 'codehilite', 'fenced_code']
     )
     
@@ -22,7 +22,7 @@ def converter(markdown):
     css_string = """
         * {margin: 0; padding: 0;}
         body {font-family: Helvetica, Arial, sans-serif; font-size: 10pt; line-height: 1.6; color: #000;}
-        h1 {font-size: 15pt; font-weight: bold; margin-top: 15px; margin-bottom: 12px; color: #000; border-bottom: 1px solid #c4bdbd}
+        h1 {font-size: 15pt; font-weight: bold; margin-top: 15px; margin-bottom: 12px; color: #000;}
         h2 {font-size: 13pt; font-weight: bold; margin-top: 10px; margin-bottom: 10px; color: #000;}
         h3 {font-size: 11pt; font-weight: bold; margin-top: 8px; margin-bottom: 8px; color: #000;}
         p {font-size: 10pt; margin-bottom: 8px; color: #000;}
@@ -33,6 +33,10 @@ def converter(markdown):
         blockquote {border-left: 3px solid #ccc; padding-left: 12px; color: #555; margin: 12px 0; font-style: italic;}
         strong {font-weight: 600; color: #000;}
         hr {border-top: 2px solid #c4bdbd;}
+        img {display: block;margin-left: auto;margin-right: auto;max-width: 90%;}
+        table {width: 100%;border-collapse: collapse;margin: 12px 0;font-size: 10pt;}
+        th, td {border: 1px solid #000;padding: 6px 8px;text-align: left;vertical-align: top;}
+        th {font-weight: bold;background-color: #f0f0f0;}
     """
         
     # Create PDF
