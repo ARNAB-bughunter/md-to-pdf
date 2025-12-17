@@ -28,11 +28,6 @@
 
     <div class="main-wrapper">
         <div class="sidebar">
-            <button class="new-doc-btn" id="newDocBtn">
-                <span>➕</span>
-                <span>New document</span>
-            </button>
-            
             <div class="sidebar-header">Documents</div>
             
             <div id="documentList">
@@ -41,10 +36,11 @@
                     <span>Untitled Document</span>
                 </div>
             </div>
-
-            <div class="sidebar-footer">
-                Login to access your documents.
-            </div>
+            <button class="new-doc-btn" id="newDocBtn">
+                <span>➕</span>
+                <span>New document</span>
+            </button>
+            
         </div>
 
         <div class="main-container">
@@ -71,7 +67,6 @@
 
     <script>
         const API_URL_CONVERTER = 'http://0.0.0.0:5000/api/convert';
-        const API_URL_LOGIN = 'http://0.0.0.0:5000/api/login'
         const md = window.markdownit({
             html: true
         });

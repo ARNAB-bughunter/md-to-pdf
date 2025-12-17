@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
     background: #f5f5f5;
     height: 100vh;
     display: flex;
@@ -33,7 +33,7 @@ body {
 .logo span {
     width: 28px;
     height: 28px;
-    background: #4CAF50;
+    background: #059669;
     color: white;
     display: flex;
     align-items: center;
@@ -88,13 +88,13 @@ button:hover {
 }
 
 .btn-download {
-    background: #4CAF50;
+    background: #059669;
     color: rgb(0, 0, 0);
     border: none;
 }
 
 .btn-download:hover {
-    background: #45a049;
+    background: #059669;
 }
 
 .btn-download:disabled {
@@ -110,7 +110,7 @@ button:hover {
 
 .sidebar {
     width: 200px;
-    background: #2d2d2d;
+    background: #1f2839;
     color: white;
     display: flex;
     flex-direction: column;
@@ -141,7 +141,7 @@ button:hover {
 }
 
 .sidebar-item.active {
-    background: #3d3d3d;
+    background: #4f5f77;
     border-left-color: #4CAF50;
 }
 
@@ -152,7 +152,7 @@ button:hover {
 .new-doc-btn {
     margin: 16px;
     padding: 10px;
-    background: #4CAF50;
+    background: #059669;
     color: white;
     border: none;
     border-radius: 4px;
@@ -165,7 +165,7 @@ button:hover {
 }
 
 .new-doc-btn:hover {
-    background: #45a049;
+    background: #059669;
 }
 
 .sidebar-footer {
@@ -235,7 +235,7 @@ textarea {
     flex: 1;
     border: none;
     padding: 20px;
-    font-family: 'Monaco', 'Courier New', monospace;
+    font-family: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
     font-size: 14px;
     line-height: 1.6;
     resize: none;
@@ -292,7 +292,7 @@ textarea {
     background: #f5f5f5;
     padding: 2px 6px;
     border-radius: 3px;
-    font-family: 'Monaco', 'Courier New', monospace;
+    font-family: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
     font-size: 13px;
 }
 
@@ -321,7 +321,7 @@ textarea {
 }
 
 .preview-content a {
-    color: #4CAF50;
+    color: #059669;
     text-decoration: none;
 }
 
