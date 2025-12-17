@@ -149,6 +149,41 @@ button:hover {
     background: #3d3d3d;
 }
 
+/* Default: hidden scrollbar */
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* Edge / IE */
+}
+
+/* Chrome / Safari */
+.sidebar-content::-webkit-scrollbar {
+    width: 0;
+}
+
+/* On hover: show scrollbar */
+.sidebar:hover .sidebar-content {
+    scrollbar-width: thin;          /* Firefox */
+}
+
+.sidebar:hover .sidebar-content::-webkit-scrollbar {
+    width: 3px;
+    border-radius: 999px; 
+}
+
+.sidebar:hover .sidebar-content::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.35);
+    border-radius: 3px;
+    border-radius: 999px; 
+}
+
+.sidebar:hover .sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
 .sidebar-item.active {
     background: #4f5f77;
     border-left-color: #4CAF50;
@@ -179,10 +214,12 @@ button:hover {
 
 .sidebar-footer {
     margin-top: auto;
-    padding: 16px;
-    border-top: 1px solid #3d3d3d;
-    font-size: 12px;
-    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: sticky;
+
 }
 
 .main-container {

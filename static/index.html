@@ -29,18 +29,20 @@
     <div class="main-wrapper">
         <div class="sidebar">
             <div class="sidebar-header">Documents</div>
-            
-            <div id="documentList">
-                <div class="sidebar-item active" data-doc-id="default">
-                    <span class="icon">📄</span>
-                    <span>Untitled Document</span>
+            <div class="sidebar-content">
+                <div id="documentList">
+                    <div class="sidebar-item active" data-doc-id="default">
+                        <span class="icon">📄</span>
+                        <span>Untitled Document</span>
+                    </div>
                 </div>
             </div>
-            <button class="new-doc-btn" id="newDocBtn">
-                <span>➕</span>
-                <span>New document</span>
-            </button>
-            
+            <div class="sidebar-footer">
+                <button class="new-doc-btn" id="newDocBtn">
+                    <span>➕</span>
+                    <span>New document</span>
+                </button>
+            </div>
         </div>
 
         <div class="main-container">
@@ -66,9 +68,9 @@
     </div>
 
     <script>
-        const backendUrl = `${window.location.protocol}//${window.location.hostname}:5000`;
+        const backendUrl = `${globalThis.location.protocol}//${globalThis.location.hostname}:5000`;
         const API_URL_CONVERTER = `${backendUrl}/api/convert`;
-        const md = window.markdownit({
+        const md = globalThis.markdownit({
             html: true
         });
         const loginBtn = document.getElementById('loginBtn')
@@ -81,6 +83,19 @@
         const docNameInput = document.getElementById('docNameInput');
         const newDocBtn = document.getElementById('newDocBtn');
         const documentList = document.getElementById('documentList');
+
+        function getNextUntitledName() {
+            const baseName = 'Untitled Document';
+            const numbers = documents
+                .map(d => {
+                    const match = d.name.match(/^Untitled Document (\d+)$/);
+                    return match ? parseInt(match[1], 10) : null;
+                })
+                .filter(n => n !== null);
+
+            const nextNumber = numbers.length ? Math.max(...numbers) + 1 : 1;
+            return `${baseName} ${nextNumber}`;
+        }
 
         let documents = [
             { id: 'default', name: 'Untitled Document', content: editor.value }
@@ -148,9 +163,10 @@
         newDocBtn.addEventListener('click', function() {
             const newDoc = {
                 id: 'doc_' + Date.now(),
-                name: 'Untitled Document',
+                name: getNextUntitledName(),
                 content: ''
             };
+
             documents.push(newDoc);
             renderDocumentList();
             loadDocument(newDoc.id);
@@ -186,13 +202,13 @@
                 }
 
                 const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
+                const url = globalThis.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = docNameInput.value.trim() + '.pdf';
                 document.body.appendChild(a);
                 a.click();
-                window.URL.revokeObjectURL(url);
+                globalThis.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
 
             } catch (error) {
@@ -203,11 +219,6 @@
             }
         });
 
-
-        // Login Page
-        loginBtn.addEventListener('click', async function() {
-            window.location.href = '/login';
-        })
 
         function showError(message) {
             errorMsg.textContent = message;
