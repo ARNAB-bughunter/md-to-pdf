@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from rate_limiter import limiter, rate_limit_exceeded_handler
@@ -46,6 +46,16 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 class MarkdownRequest(BaseModel):
     markdown: str
     filename: str = "document.pdf"
+    @field_validator('filename')
+    def sanitize_filename(cls, v):
+        # Remove path traversal attempts
+        import os
+        v = os.path.basename(v)
+        # Remove dangerous characters
+        v = "".join(c for c in v if c.isalnum() or c in (' ', '.', '_', '-'))
+        if not v.endswith('.pdf'):
+            v += '.pdf'
+        return v
 
 
 @app.exception_handler(HTTPException)
