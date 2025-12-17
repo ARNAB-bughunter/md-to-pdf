@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Convert Markdown to PDF online with live preview. Write, edit, and download clean PDF documents instantly using a fast and simple interface.">
     <title>Markdown to PDF</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
     <link rel="stylesheet" href="/static/style.css" />
     
 </head>
 <body>
+    <h1 class="visually-hidden">Markdown to PDF Converter</h1>
     <div class="header">
         <div class="logo">
             <span>M</span>
@@ -48,7 +50,7 @@
         <div class="main-container">
             <div class="editor-pane">
                 <div class="pane-header">
-                    <div class="doc-name-label">DOCUMENT NAME</div>
+                    <label for="docNameInput" class="doc-name-label">DOCUMENT NAME</label>
                     <input type="text" id="docNameInput" value="Untitled Document" />
                 </div>
                 <textarea id="editor" placeholder="Start typing your markdown here..."></textarea>

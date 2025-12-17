@@ -12,6 +12,15 @@ body {
     flex-direction: column;
 }
 
+.visually-hidden {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .header {
     background: white;
     border-bottom: 1px solid #e0e0e0;
@@ -34,7 +43,7 @@ body {
     width: 28px;
     height: 28px;
     background: #059669;
-    color: white;
+    color: rgb(240, 231, 231);
     display: flex;
     align-items: center;
     justify-content: center;
