@@ -1,51 +1,93 @@
 import markdown
 from weasyprint import HTML, CSS
 from io import BytesIO
+import bleach
+from urllib.parse import urlparse
 
 
-def converter(markdown_text):
-    # Convert markdown to HTML
-    html = markdown.markdown(
-        markdown_text, 
-        extensions=['extra', 'codehilite', 'fenced_code']
-    )
-    
-    # Simple HTML structure
-    html_content = f"""
-        <html>
-        <head></head>
-        <body>{html}</body>
-        </html>
+# Allowed HTML after Markdown
+ALLOWED_TAGS = [
+    "p", "br", "strong", "em", "ul", "ol", "li",
+    "h1", "h2", "h3", "h4", "blockquote",
+    "code", "pre", "hr",
+    "table", "thead", "tbody", "tr", "th", "td",
+    "img"
+]
+
+ALLOWED_ATTRS = {
+    "img": ["src", "alt"],
+    "th": ["colspan", "rowspan"],
+    "td": ["colspan", "rowspan"]
+}
+
+ALLOWED_PROTOCOLS = ["http", "https"]
+
+
+def safe_url_fetcher(url):
     """
-    
-    # Your CSS styles
+    Block file://, ftp://, internal IPs, localhost
+    """
+    parsed = urlparse(url)
+
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError("Blocked URL scheme")
+
+    if parsed.hostname in ("localhost", "127.0.0.1"):
+        raise ValueError("Blocked internal host")
+
+    # Allow WeasyPrint default fetching for safe URLs
+    from weasyprint.urls import default_url_fetcher
+    return default_url_fetcher(url)
+
+
+def converter(markdown_text: str):
+    # Convert Markdown → HTML (NO raw HTML extensions)
+    html = markdown.markdown(
+        markdown_text,
+        extensions=["extra", "fenced_code"],
+        output_format="html5"
+    )
+
+    # Sanitize HTML
+    clean_html = bleach.clean(
+        html,
+        tags=ALLOWED_TAGS,
+        attributes=ALLOWED_ATTRS,
+        protocols=ALLOWED_PROTOCOLS,
+        strip=True
+    )
+
+    html_content = f"""
+    <html>
+      <head><meta charset="utf-8"></head>
+      <body>{clean_html}</body>
+    </html>
+    """
+
     css_string = """
         * {margin: 0; padding: 0;}
-        body {font-family: Helvetica, Arial, sans-serif; font-size: 10pt; line-height: 1.6; color: #000;}
-        h1 {font-size: 15pt; font-weight: bold; margin-top: 15px; margin-bottom: 12px; color: #000;}
-        h2 {font-size: 13pt; font-weight: bold; margin-top: 10px; margin-bottom: 10px; color: #000;}
-        h3 {font-size: 11pt; font-weight: bold; margin-top: 8px; margin-bottom: 8px; color: #000;}
-        p {font-size: 10pt; margin-bottom: 8px; color: #000;}
+        body {font-family: Helvetica, Arial, sans-serif; font-size: 10pt; line-height: 1.6;}
+        h1 {font-size: 15pt; margin: 15px 0 12px;}
+        h2 {font-size: 13pt; margin: 10px 0;}
+        h3 {font-size: 11pt; margin: 8px 0;}
+        p {margin-bottom: 8px;}
         ul, ol {margin-bottom: 10px; padding-left: 30px;}
-        li {margin-bottom: 6px;}
-        code {font-family: Courier New, monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 3px; font-size: 11pt;}
-        pre {background: #f0f0f0; padding: 10px; border-radius: 4px; font-size: 11pt; line-height: 1.5;}
-        blockquote {border-left: 3px solid #ccc; padding-left: 12px; color: #555; margin: 12px 0; font-style: italic;}
-        strong {font-weight: 600; color: #000;}
-        hr {border-top: 2px solid #c4bdbd;}
-        img {display: block;margin-left: auto;margin-right: auto;max-width: 90%;}
-        table {width: 100%;border-collapse: collapse;margin: 12px 0;font-size: 10pt;}
-        th, td {border: 1px solid #000;padding: 6px 8px;text-align: left;vertical-align: top;}
-        th {font-weight: bold;background-color: #f0f0f0;}
+        code {background: #f0f0f0; padding: 2px 5px;}
+        pre {background: #f0f0f0; padding: 10px;}
+        img {display: block; margin: auto; max-width: 90%;}
+        table {width: 100%; border-collapse: collapse;}
+        th, td {border: 1px solid #000; padding: 6px;}
     """
-        
-    # Create PDF
-    pdf_buffer = BytesIO()
-    HTML(string=html_content).write_pdf(
-    pdf_buffer,
-    stylesheets=[CSS(string=css_string)]
-    )
-    
-    pdf_buffer.seek(0)
 
+    pdf_buffer = BytesIO()
+
+    HTML(
+        string=html_content,
+        url_fetcher=safe_url_fetcher
+    ).write_pdf(
+        pdf_buffer,
+        stylesheets=[CSS(string=css_string)]
+    )
+
+    pdf_buffer.seek(0)
     return pdf_buffer

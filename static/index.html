@@ -18,8 +18,8 @@
         </div>
         <div class="header-actions">
             <button id="downloadBtn" class="btn-download">
-                <img src="/static/icons8-pdf-50.png" alt="PDF"> 
-                Download
+                <span>💾</span>
+                <span>Download</span> 
             </button>
         </div>
     </div>
@@ -197,7 +197,7 @@
 
             } catch (error) {
                 console.error('Error:', error);
-                showError('Failed to generate PDF. Make sure the Flask server is running on port 5000.');
+                showError(error || 'Failed to generate PDF');
             } finally {
                 loading.classList.remove('show');
             }
