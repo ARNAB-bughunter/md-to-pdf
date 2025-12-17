@@ -3,7 +3,7 @@ from weasyprint import HTML, CSS
 from io import BytesIO
 import bleach
 from urllib.parse import urlparse
-
+from bleach.css_sanitizer import CSSSanitizer
 
 # Allowed HTML after Markdown
 ALLOWED_TAGS = [
@@ -11,17 +11,19 @@ ALLOWED_TAGS = [
     "h1", "h2", "h3", "h4", "blockquote",
     "code", "pre", "hr",
     "table", "thead", "tbody", "tr", "th", "td",
-    "img"
+    "img", "span"
 ]
 
 ALLOWED_ATTRS = {
     "img": ["src", "alt"],
     "th": ["colspan", "rowspan"],
-    "td": ["colspan", "rowspan"]
+    "td": ["colspan", "rowspan"],
+    "span": ["style"]
 }
 
 ALLOWED_PROTOCOLS = ["http", "https"]
 
+css_sanitizer = CSSSanitizer(allowed_css_properties=["color", "background-color", "font-weight"])
 
 def safe_url_fetcher(url):
     """
@@ -44,8 +46,8 @@ def converter(markdown_text: str):
     # Convert Markdown → HTML (NO raw HTML extensions)
     html = markdown.markdown(
         markdown_text,
-        extensions=["extra", "fenced_code"],
-        output_format="html5"
+        extensions=["extra", "fenced_code", "codehilite"],
+        output_format="html"
     )
     # Sanitize HTML
     clean_html = bleach.clean(
@@ -53,6 +55,7 @@ def converter(markdown_text: str):
         tags=ALLOWED_TAGS,
         attributes=ALLOWED_ATTRS,
         protocols=ALLOWED_PROTOCOLS,
+        css_sanitizer=css_sanitizer,
         strip=True
     )
     
