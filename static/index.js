@@ -1,4 +1,4 @@
-const backendUrl = `${globalThis.location.protocol}//${globalThis.location.hostname}:5000`;
+const backendUrl = `${globalThis.location.protocol}//${globalThis.location.hostname}`;
 const API_URL_CONVERTER = `${backendUrl}/api/convert`;
 const md = globalThis.markdownit({
     html: true
