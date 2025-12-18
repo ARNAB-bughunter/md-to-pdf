@@ -14,12 +14,12 @@ import os
 
 # minify_static_files()
 
-app = FastAPI()
+app = FastAPI(docs_url=None,redoc_url=None)
 MAX_REQUEST_SIZE = 2 * 1024 * 1024  # 2MB
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://markdowntopdf.cloud/","https://www.markdowntopdf.cloud/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
