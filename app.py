@@ -73,6 +73,11 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         }
     )
 
+@app.exception_handler(404)
+async def custom_404_handler(request: Request, exc):
+    # JSON (API use case)
+    return FileResponse("static/404_page.html")
+
 @app.get("/")
 async def redirect_to_index():
     return FileResponse("static/index.html")
