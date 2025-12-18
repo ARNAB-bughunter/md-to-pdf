@@ -8,11 +8,11 @@ from slowapi.middleware import SlowAPIMiddleware
 from rate_limiter import limiter, rate_limit_exceeded_handler
 from starlette.middleware.base import BaseHTTPMiddleware
 from src.converter import converter
-from utils.minify import minify_static_files
+# from utils.minify import minify_static_files
 import os
 
 
-minify_static_files()
+# minify_static_files()
 
 app = FastAPI()
 MAX_REQUEST_SIZE = 2 * 1024 * 1024  # 2MB
@@ -46,7 +46,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 
-app.mount("/static", StaticFiles(directory="static_min"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 class MarkdownRequest(BaseModel):
     markdown: str
