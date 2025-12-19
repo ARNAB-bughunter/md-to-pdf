@@ -22,3 +22,4 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./nginx/robots.txt:/usr/share/nginx/html/robots.txt:ro
       - ./nginx/favicon.ico:/usr/share/nginx/html/favicon.ico:ro
+      - ./nginx/ads.txt:/usr/share/nginx/html/ads.txt:ro
