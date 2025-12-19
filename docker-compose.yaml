@@ -7,7 +7,20 @@ services:
       - "5000:5000"
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - redis
     restart: always
+  
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+  
   nginx:
     image: nginx:alpine
     container_name: nginx
