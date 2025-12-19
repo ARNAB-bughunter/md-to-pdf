@@ -158,6 +158,47 @@ function showError(message) {
     }, 5000);
 }
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const editor = document.getElementById("editor");
+    const preview = document.getElementById("preview");
+
+    let isSyncingEditorScroll = false;
+    let isSyncingPreviewScroll = false;
+
+    function syncScroll(source, target) {
+        const sourceScrollTop = source.scrollTop;
+        const sourceScrollHeight = source.scrollHeight - source.clientHeight;
+        const targetScrollHeight = target.scrollHeight - target.clientHeight;
+
+        if (sourceScrollHeight <= 0 || targetScrollHeight <= 0) return;
+
+        const scrollRatio = sourceScrollTop / sourceScrollHeight;
+        target.scrollTop = scrollRatio * targetScrollHeight;
+    }
+
+    editor.addEventListener("scroll", () => {
+        if (isSyncingEditorScroll) {
+            isSyncingEditorScroll = false;
+            return;
+        }
+        isSyncingPreviewScroll = true;
+        syncScroll(editor, preview);
+    });
+
+    preview.addEventListener("scroll", () => {
+        if (isSyncingPreviewScroll) {
+            isSyncingPreviewScroll = false;
+            return;
+        }
+        isSyncingEditorScroll = true;
+        syncScroll(preview, editor);
+    });
+});
+
+
+
+
 // Initial preview
 updatePreview();
 renderDocumentList();
