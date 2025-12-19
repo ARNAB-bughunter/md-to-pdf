@@ -68,12 +68,15 @@
 
             <section class="editor-pane" aria-labelledby="editor-title">
                 <div class="pane-header">
-                    <label id="editor-title" for="docNameInput" class="doc-name-label">
-                        Document Name
-                    </label>
+                    <div class="pane-header-inside">
+                        <label id="editor-title" for="docNameInput" class="doc-name-label">
+                            Document Name
+                        </label>
+                        <button class="clear-editor-btn" id="clearBtn">Clear</button>
+                    </div>
                     <input type="text" id="docNameInput" value="Untitled Document" />
                 </div>
-                <textarea id="editor" placeholder="Start typing your markdown here..."></textarea>
+                <textarea id="editor"></textarea>
             </section>
 
             <section class="preview-pane" aria-labelledby="preview-title">

@@ -13,6 +13,63 @@ const docName = document.getElementById('docName');
 const docNameInput = document.getElementById('docNameInput');
 const newDocBtn = document.getElementById('newDocBtn');
 const documentList = document.getElementById('documentList');
+const clearBtn = document.getElementById('clearBtn');
+const DEFAULT_MARKDOWN = `# Styled Markdown Example
+
+This is a paragraph with **bold** and *italic* text.
+
+## Lists Example
+- First item
+- Second item with **bold**
+- Nested item with *italic*
+- Another nested item
+- Third item
+
+## Java Code Example
+\`\`\`javascript
+function greeting(name) {
+  return \`Hello, \${name}!\`;
+}
+\`\`\`
+
+## Python Example
+\`\`\`python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    else:
+        a, b = 0, 1
+        for _ in range(n - 1):
+            a, b = b, a + b
+        return b
+
+# List comprehension example
+squares = [x**2 for x in range(10)]
+\`\`\`
+
+## Blockquote Example
+> This is a blockquote.
+> It can span multiple lines.
+
+## Table Example
+| Feature | Description |
+|---------|-------------|
+| Tables  | Organized data display |
+| Lists   | Bullet points and numbers |
+| Code    | Syntax highlighted blocks |
+
+## Link Example
+[Visit GitHub](https://github.com)
+
+***
+
+### Cat Image Example
+![Placeholder Image](https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?q=80&w=800&auto=format&fit=crop)
+`;
+
+
+
+
 
 function getNextUntitledName() {
     const baseName = 'Untitled Document';
@@ -57,6 +114,11 @@ function saveCurrentDocument() {
         doc.content = editor.value;
     }
 }
+
+clearBtn.addEventListener('click', () => {
+    editor.value = '';
+    updatePreview()
+});
 
 function loadDocument(docId) {
     saveCurrentDocument();
@@ -200,5 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // Initial preview
+editor.value = DEFAULT_MARKDOWN;
 updatePreview();
 renderDocumentList();
