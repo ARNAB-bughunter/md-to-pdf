@@ -1,48 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Convert Markdown to PDF online with live preview. Write, edit, and download clean PDF documents instantly using a fast and simple interface.">
+    <meta name="description"
+        content="Convert Markdown to PDF online with live preview. Write, edit, and download clean PDF documents instantly using a fast and simple interface.">
     <meta name="google-adsense-account" content="ca-pub-7927014471285160">
     <title>Convert Markdown to PDF Online | Free MD to PDF Tool</title>
     <script src="/static/markdown-it.min.js"></script>
     <script src="/static/index.js" defer></script>
     <link rel="stylesheet" href="/static/style.css" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7927014471285160" crossorigin="anonymous"></script>    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7927014471285160"
+        crossorigin="anonymous"></script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K8GD2F9HLM"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-    gtag('config', 'G-K8GD2F9HLM');
+        gtag('config', 'G-K8GD2F9HLM');
     </script>
 
 </head>
+
 <body>
-    <h1 class="visually-hidden">Markdown to PDF Converter</h1>
-    <div class="header">
-        <div class="logo">
-            <span>M</span>
-            <div>
-                Markdown to PDF
+    <header>
+        <h1 class="visually-hidden">Markdown to PDF Converter</h1>
+        <div class="header">
+            <div class="logo">
+                <span>M</span>
+                <div>Markdown to PDF</div>
+            </div>
+            <div class="header-actions">
+                <button id="downloadBtn" class="btn-download">
+                    <span>💾</span>
+                    <span>Download</span>
+                </button>
             </div>
         </div>
-        <div class="header-actions">
-            <button id="downloadBtn" class="btn-download">
-                <span>💾</span>
-                <span>Download</span> 
-            </button>
-        </div>
-    </div>
+        <div class="error" id="errorMsg"></div>
+    </header>
+    <main id="main-content" class="main-wrapper">
 
-    <div class="error" id="errorMsg"></div>
-
-    <div class="main-wrapper">
-        <div class="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-header">Documents</div>
             <div class="sidebar-content">
                 <div id="documentList">
@@ -58,30 +61,32 @@
                     <span>New document</span>
                 </button>
             </div>
-        </div>
+        </aside>
 
-        <div class="main-container">
-            <div class="editor-pane">
+        <section class="main-container">
+
+            <section class="editor-pane" aria-labelledby="editor-title">
                 <div class="pane-header">
-                    <label for="docNameInput" class="doc-name-label">DOCUMENT NAME</label>
+                    <label id="editor-title" for="docNameInput" class="doc-name-label">
+                        Document Name
+                    </label>
                     <input type="text" id="docNameInput" value="Untitled Document" />
                 </div>
                 <textarea id="editor" placeholder="Start typing your markdown here..."></textarea>
-            </div>
+            </section>
 
-            <div class="preview-pane">
-                <div class="pane-header">Live Preview</div>
-                <div class="pane-header"></div>
+            <section class="preview-pane" aria-labelledby="preview-title">
+                <div class="pane-header" id="preview-title">Live Preview</div>
                 <div class="preview-content" id="preview"></div>
-            </div>
-        </div>
-    </div>
+            </section>
 
-    <div class="loading" id="loading">
+        </section>
+    </main>
+
+    <div class="loading" id="loading" aria-live="polite">
         <div class="spinner"></div>
         <div>Generating PDF...</div>
     </div>
-
-
 </body>
+
 </html>
