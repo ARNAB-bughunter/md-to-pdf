@@ -111,6 +111,7 @@ def converter(markdown_text: str):
         img {{display: block; margin: auto; max-width: 90%;}}
         table {{width: 100%; border-collapse: collapse;}}
         th, td {{border: 1px solid #000; padding: 6px;}}
+        th {{background-color: #e0e0e0;}}
     """
     
     pdf_buffer = BytesIO()
