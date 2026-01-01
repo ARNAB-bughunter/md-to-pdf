@@ -8,6 +8,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from rate_limiter import limiter, rate_limit_exceeded_handler
 from starlette.middleware.base import BaseHTTPMiddleware
 from src.converter import converter
+from mangum import Mangum
 # from utils.minify import minify_static_files
 import os
 
@@ -19,11 +20,13 @@ MAX_REQUEST_SIZE = 2 * 1024 * 1024  # 2MB
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://markdowntopdf.cloud/","https://www.markdowntopdf.cloud/"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+handler = Mangum(app)
 
 class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):

@@ -1,38 +1,37 @@
-FROM ubuntu:22.04
+FROM public.ecr.aws/lambda/python:3.12
 
-# Avoid prompts from apt
-ENV DEBIAN_FRONTEND=noninteractive
+# Prevent Python from writing pyc files
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Create non-root user early
-RUN groupadd -r appuser && useradd -r -g appuser -u 1000 appuser
-
-# Update and install dependencies, then clean up in one layer
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    python3-pip \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN dnf update -y && \
+    dnf install -y \
+    pango \
+    pango-devel \
+    cairo \
+    cairo-devel \
+    gdk-pixbuf2 \
+    libffi \
+    libffi-devel \
+    libxml2 \
+    libxml2-devel \
+    libxslt \
+    libxslt-devel \
+    fontconfig \
+    freetype && \
+    dnf clean all
 
 # Set working directory
-WORKDIR /md_to_pdf
+WORKDIR /var/task
 
-# Copy requirements first (better caching)
-COPY --chown=appuser:appuser requirements.txt .
+# Copy requirements
+COPY requirements.txt .
 
-# Upgrade pip and install dependencies
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY --chown=appuser:appuser . .
+COPY . .
 
-# Switch to non-root user
-USER appuser
-
-# Expose port (documentation only)
-EXPOSE 5000
-
-# Use exec form and drop privileges
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
+# Lambda entry point
+CMD ["app.handler"]
