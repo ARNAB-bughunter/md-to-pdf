@@ -93,6 +93,10 @@ async def custom_404_handler(request: Request, exc):
 async def redirect_to_index():
     return FileResponse("static/index.html")
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.post("/api/convert")
 @limiter.limit("5/minute")
 async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
