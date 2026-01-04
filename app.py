@@ -10,7 +10,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from src.converter import converter
 from mangum import Mangum
 # from utils.minify import minify_static_files
-import os
+import os, sys
 
 os.environ["FONTCONFIG_PATH"] = "/etc/fonts"
 os.environ["FONTCONFIG_FILE"] = "/etc/fonts/fonts.conf"
@@ -18,6 +18,12 @@ os.environ["XDG_CACHE_HOME"] = "/tmp"
 os.environ["HOME"] = "/tmp"
 os.environ["TMPDIR"] = "/tmp"
 
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    handlers=[logging.StreamHandler(sys.stdout)],
+    force=True
+)
 
 
 
@@ -106,7 +112,7 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
         
         pdf_buffer = converter(input_request.markdown)
         
-        print("PDF GOT..PENDING FOR RESPONSE ")
+        logging.info("PDF GOT..PENDING FOR RESPONSE ")
         return Response(
             pdf_buffer,
             media_type="application/pdf",
@@ -114,5 +120,5 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
         )
         
     except Exception as e:
-        print("EXCEPTION",e)
+        logging.info("EXCEPTION",e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
