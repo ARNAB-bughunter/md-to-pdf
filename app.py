@@ -105,12 +105,14 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
             raise HTTPException(status_code=400, detail="Empty content")
         
         pdf_buffer = converter(input_request.markdown)
-                
+        
+        print("PDF GOT..PENDING FOR RESPONSE ")
         return Response(
             pdf_buffer,
             media_type="application/pdf",
             headers={"Content-Disposition": f"attachment; filename={input_request.filename}"}
         )
         
-    except Exception:
+    except Exception as e:
+        print("EXCEPTION",e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
