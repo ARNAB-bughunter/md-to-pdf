@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 
 limiter = Limiter(
     key_func=get_remote_address,
-    storage_uri="redis://redis:6379/0",
+    # storage_uri="redis://redis:6379/0",
     default_limits=["10/minute"]
 )
 
