@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, FileResponse, JSONResponse
+from fastapi.responses import StreamingResponse, FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, field_validator
 from slowapi.errors import RateLimitExceeded
@@ -11,6 +11,14 @@ from src.converter import converter
 from mangum import Mangum
 # from utils.minify import minify_static_files
 import os
+
+os.environ["FONTCONFIG_PATH"] = "/etc/fonts"
+os.environ["FONTCONFIG_FILE"] = "/etc/fonts/fonts.conf"
+os.environ["XDG_CACHE_HOME"] = "/tmp"
+os.environ["HOME"] = "/tmp"
+os.environ["TMPDIR"] = "/tmp"
+
+
 
 
 # minify_static_files()
@@ -94,7 +102,7 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
         
         pdf_buffer = converter(input_request.markdown)
                 
-        return StreamingResponse(
+        return Response(
             pdf_buffer,
             media_type="application/pdf",
             headers={"Content-Disposition": f"attachment; filename={input_request.filename}"}

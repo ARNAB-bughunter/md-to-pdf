@@ -1,5 +1,5 @@
 import markdown
-from weasyprint import HTML, CSS
+
 from io import BytesIO
 import bleach
 from urllib.parse import urlparse
@@ -38,6 +38,9 @@ def safe_url_fetcher(url):
     return default_url_fetcher(url)
 
 def converter(markdown_text: str):
+    import tempfile
+    tempfile.tempdir = "/tmp"
+    from weasyprint import HTML, CSS
     # Convert Markdown → HTML (NO raw HTML extensions)
     html = markdown.markdown(
         markdown_text,
