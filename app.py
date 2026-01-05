@@ -115,6 +115,7 @@ def health():
 @limiter.limit("5/minute")
 async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
     try:
+        logger.info("INPUT REQUEST RECIVE ")
         if not input_request.markdown.strip():
             raise HTTPException(status_code=400, detail="Empty content")
         
