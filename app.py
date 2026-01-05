@@ -129,7 +129,7 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
         # Base64 encode for Lambda
         pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
         
-        logging.info("PDF GOT..PENDING FOR RESPONSE ")
+        logger.info("PDF GOT..PENDING FOR RESPONSE ")
         return Response(
             pdf_base64,
             media_type="application/pdf",
@@ -137,5 +137,5 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
         )
         
     except Exception as e:
-        logging.info("EXCEPTION",e)
+        logger.info("EXCEPTION",e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
