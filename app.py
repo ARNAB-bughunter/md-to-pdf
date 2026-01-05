@@ -9,6 +9,8 @@ from rate_limiter import limiter, rate_limit_exceeded_handler
 from starlette.middleware.base import BaseHTTPMiddleware
 from src.converter import converter
 from mangum import Mangum
+import base64
+import io
 # from utils.minify import minify_static_files
 import os, sys
 
@@ -111,10 +113,19 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
             raise HTTPException(status_code=400, detail="Empty content")
         
         pdf_buffer = converter(input_request.markdown)
+
+        # Ensure pdf_buffer is bytes
+        if isinstance(pdf_buffer, io.BytesIO):
+            pdf_bytes = pdf_buffer.getvalue()
+        else:
+            pdf_bytes = pdf_buffer
+        
+        # Base64 encode for Lambda
+        pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
         
         logging.info("PDF GOT..PENDING FOR RESPONSE ")
         return Response(
-            pdf_buffer,
+            pdf_base64,
             media_type="application/pdf",
             headers={"Content-Disposition": f"attachment; filename={input_request.filename}"}
         )
