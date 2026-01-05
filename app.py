@@ -21,11 +21,17 @@ os.environ["HOME"] = "/tmp"
 os.environ["TMPDIR"] = "/tmp"
 
 import logging
-logging.basicConfig(
-    level=logging.INFO,
-    handlers=[logging.StreamHandler(sys.stdout)],
-    force=True
-)
+# Configure logging for Lambda
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# Ensure logs go to stdout (Lambda captures this)
+if not logger.handlers:
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('[%(levelname)s] %(asctime)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 
 
