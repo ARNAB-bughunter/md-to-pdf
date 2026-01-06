@@ -109,12 +109,14 @@ async def redirect_to_index():
 
 @app.get("/health")
 def health():
+    print("Lambda function starting...", file=sys.stdout, flush=True)
     return {"status": "ok"}
 
 @app.post("/api/convert")
 @limiter.limit("5/minute")
 async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
     try:
+        print("INPUT REQUEST RECIVE ", file=sys.stdout, flush=True)
         logger.info("INPUT REQUEST RECIVE ")
         if not input_request.markdown.strip():
             raise HTTPException(status_code=400, detail="Empty content")
@@ -130,6 +132,7 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
         # Base64 encode for Lambda
         pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
         
+        print("PDF GOT..PENDING FOR RESPONSE ", file=sys.stdout, flush=True)
         logger.info("PDF GOT..PENDING FOR RESPONSE ")
         return Response(
             pdf_base64,
@@ -138,5 +141,6 @@ async def convert_md_to_pdf(request: Request, input_request: MarkdownRequest):
         )
         
     except Exception as e:
-        logger.info("EXCEPTION",e)
+        print(f"EXCEPTION, {e}", file=sys.stdout, flush=True)
+        logger.info(f"EXCEPTION, {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
