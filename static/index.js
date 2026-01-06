@@ -90,12 +90,12 @@ let documents = [
 let currentDocId = 'default';
 
 // Live preview update
-editor.addEventListener('input', function() {
+editor.addEventListener('input', function () {
     updatePreview();
     saveCurrentDocument();
 });
 
-docNameInput.addEventListener('input', function() {
+docNameInput.addEventListener('input', function () {
     const doc = documents.find(d => d.id === currentDocId);
     if (doc) {
         doc.name = docNameInput.value;
@@ -122,14 +122,14 @@ clearBtn.addEventListener('click', () => {
 
 function loadDocument(docId) {
     saveCurrentDocument();
-    
+
     const doc = documents.find(d => d.id === docId);
     if (doc) {
         currentDocId = docId;
         editor.value = doc.content;
         docNameInput.value = doc.name;
         updatePreview();
-        
+
         document.querySelectorAll('.sidebar-item').forEach(item => {
             item.classList.remove('active');
         });
@@ -146,13 +146,13 @@ function renderDocumentList() {
     `).join('');
 
     document.querySelectorAll('.sidebar-item').forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function () {
             loadDocument(this.getAttribute('data-doc-id'));
         });
     });
 }
 
-newDocBtn.addEventListener('click', function() {
+newDocBtn.addEventListener('click', function () {
     const newDoc = {
         id: 'doc_' + Date.now(),
         name: getNextUntitledName(),
@@ -165,9 +165,9 @@ newDocBtn.addEventListener('click', function() {
 });
 
 // Download PDF via API
-downloadBtn.addEventListener('click', async function() {
+downloadBtn.addEventListener('click', async function () {
     const markdown = editor.value.trim();
-    
+
     if (!markdown) {
         showError('Please enter some markdown content first!');
         return;
@@ -193,19 +193,31 @@ downloadBtn.addEventListener('click', async function() {
             throw new Error(error.message || 'Failed to generate PDF');
         }
 
-        const blob = await response.blob();
+        // Get the base64 string from response
+        const pdfBase64 = await response.text();
+
+        // Convert base64 to binary
+        const binaryString = atob(pdfBase64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+
+        // Create blob from binary data
+        const blob = new Blob([bytes], { type: 'application/pdf' });
         const url = globalThis.URL.createObjectURL(blob);
+
         const a = document.createElement('a');
         a.href = url;
         a.download = docNameInput.value.trim() + '.pdf';
         document.body.appendChild(a);
         a.click();
+
         globalThis.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-
     } catch (error) {
         console.error('Error:', error);
-        showError(error || 'Failed to generate PDF');
+        showError(error.message || 'Failed to generate PDF');
     } finally {
         loading.classList.remove('show');
     }
